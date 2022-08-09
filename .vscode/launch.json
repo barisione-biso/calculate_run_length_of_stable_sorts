@@ -1,0 +1,48 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Process run length",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/process_run_length",
+            "args": ["~/dcc_uchile/git_projects/ring_beyond_wco/dat/wikidata-filtered-enumerated-red.dat"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "miDebuggerPath": "/usr/bin/gdb"
+        },
+        {
+            "name": "run_length_check",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/run_length_check",
+            "args": ["/home/fabrizio/dcc_uchile/git_projects/calculate_run_length_of_stable_sorts/0.dat"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "miDebuggerPath": "/usr/bin/gdb"
+        }
+    ]
+}
