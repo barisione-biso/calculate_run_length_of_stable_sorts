@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/src/process_run_length",
-            "args": ["~/dcc_uchile/git_projects/ring_beyond_wco/dat/wikidata-filtered-enumerated-red.dat"],
+            "args": ["../data/wikidata-filtered-enumerated-red.dat"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

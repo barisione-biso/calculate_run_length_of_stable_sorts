@@ -34,15 +34,6 @@ int main(int argc, char **argv)
     }
 
     std::vector<std::uint64_t> v;
-    /*
-    std::string input_file= argv[1];
-    std::ifstream ifs(input_file);
-    v.reserve(81426573);
-    std::string str;
-    while (ifs.good()) {
-        ifs >> str;
-        v.emplace_back(str);
-    }*/
     std::ifstream sif( argv[1] );
     boost::archive::text_iarchive iarch2(sif);
     iarch2 >> v;

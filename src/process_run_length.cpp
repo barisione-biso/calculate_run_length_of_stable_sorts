@@ -16,9 +16,9 @@ using row = std::deque<uint64_t>;
 using matrix = std::vector<row>;
 
 /*
-
-ESTA CLASE GENERA 3 archivos, [0,1,2].dat. los que se deben pasar con input a 'run_length_check'.
+Usando wikidata-filtered-enumerated.dat esta clase genera 3 archivos, [0,1,2].dat. los que se deben pasar con input a 'run_length_check'.
 Este proceso es muy poco eficiente porque usa deque + vector. Debe haber otra manera de hacer el move to front sin deque.
+TODO: representar de manera compacta usando int_vector o bit_vector de SDSL.
 */
 class process_run_length{
     private:
@@ -33,7 +33,7 @@ class process_run_length{
             std::ifstream ifs(input_file);
             std::string str_line;
             //matrix table;
-            table.reserve(81426573);
+            table.reserve(81426573);//MAX SIZE de wikidata-enumerated.dat
             while (std::getline(ifs, str_line)){
                 std::deque<uint64_t> aux;
                 // construct a stream from the string
@@ -79,13 +79,13 @@ class process_run_length{
             l.reserve(81426573);
             int i;
             uint64_t num_rows = table.size();
-            int last_column_id = table[0].size();
+            int last_column_id = table[0].size() - 1;
             for (i = 0; i < num_rows; i++){
-                uint64_t number = table[i][last_column_id - 1];
+                uint64_t number = table[i][last_column_id];
                 l.push_back(number);
             }
             l.shrink_to_fit();
-            uint64_t aux = l[0];
+            /*uint64_t aux = l[0];
             int num_of_runs = 1;
             for (i = 1; i < l.size(); i++){
                 if(aux != l[i]){
@@ -93,31 +93,45 @@ class process_run_length{
                 }
                 aux = l[i];
             }
-            std::cout << "num_of_runs: " << num_of_runs << std::endl;
+            std::cout << "Num_of_runs on Last Column: " << num_of_runs << std::endl;
+            */
             return l;
         }
-
+        void print_num_of_runs(int column_id){
+            int num_of_runs = 1;
+            uint64_t num_rows = table.size();
+            uint64_t aux = table[0][column_id];
+            for (uint64_t i = 0; i < num_rows; i++){
+                auto value = table[i][column_id];
+                if(aux != value){
+                    num_of_runs++;
+                }
+                aux = value;
+            }
+            std::cout << "Num_of_runs on column "<< column_id << ": " << num_of_runs << std::endl;
+        }
         void sort_table (){
             matrix::iterator it, table_begin = table.begin(), triple_end = table.end();
             std::sort(table_begin, triple_end);
         }
 
         void process_columns () {
-            sort_table();
-            {
-                const std::vector<uint64_t>& L = get_last_column_as_vector();
-                std::ofstream sof( "0.dat" );
-                boost::archive::text_oarchive oarch(sof);
-                // Save the data
-                oarch &L;
-            }
-            
             /*********************** PART 2.2 : Process k-1 ..+ 1 column ***********************/
-            for(int i = 1; i < num_of_columns; i++){
-                move_last_column_to_front();
+            for(int i = 0; i < num_of_columns; i++){
+                std::cout << "Order # " << (i+1) << std::endl << "========" << std::endl;
+                if(i > 0){
+                    move_last_column_to_front();
+                }
                 sort_table();
                 //pop_first_column(table);
+                //Print the number of runs of columns [0, |L| - 1].
+                for(int i=0; i < table[0].size() - 1; i++){
+                    print_num_of_runs(i);
+                }
                 const std::vector<uint64_t>& L = get_last_column_as_vector();
+                //Print the number of runs of the last column.
+                int last_column_id = table[0].size() - 1;
+                print_num_of_runs(last_column_id);
                 std::ofstream sof(  std::to_string(i)+".dat" );
                 boost::archive::text_oarchive oarch(sof);
                 // Save the data
@@ -136,6 +150,6 @@ int main(int argc, char **argv){
     process_run_length p = process_run_length(file);
     /*********************** PART 2 : Process columns (k) ***********************/
     p.process_columns();
-    
+
     return 0;
 }
