@@ -85,37 +85,48 @@ class process_run_length{
                 l.push_back(number);
             }
             l.shrink_to_fit();
-            /*uint64_t aux = l[0];
-            int num_of_runs = 1;
-            for (i = 1; i < l.size(); i++){
-                if(aux != l[i]){
-                    num_of_runs++;
-                }
-                aux = l[i];
-            }
-            std::cout << "Num_of_runs on Last Column: " << num_of_runs << std::endl;
-            */
             return l;
         }
-        void print_num_of_runs(int column_id){
+        /**
+         * Prints number of runs of the same number.
+         * a run ends on each pos i where s[i] > s[i-1] besides the run that ends at the last position of S.
+         */
+        void print_num_of_runs_eq_num(int column_id){
             int num_of_runs = 1;
             uint64_t num_rows = table.size();
-            uint64_t aux = table[0][column_id];
+            uint64_t prev_value = table[0][column_id];
             for (uint64_t i = 0; i < num_rows; i++){
                 auto value = table[i][column_id];
-                if(aux != value){
+                if(prev_value != value){
                     num_of_runs++;
                 }
-                aux = value;
+                prev_value = value;
             }
-            std::cout << "Num_of_runs on column "<< column_id << ": " << num_of_runs << std::endl;
+            std::cout << "Num_of_runs of the same number for column "<< column_id << ": " << num_of_runs << std::endl;
+        }
+        /*
+        An ascending sorting sequence S has only 1 run of ascending numbers.
+        */
+        void print_num_of_runs_ascending_num(int column_id){
+            int num_of_runs = 1;
+            uint64_t num_rows = table.size();
+            uint64_t prev_value = table[0][column_id];
+            for (uint64_t i = 0; i < num_rows; i++){
+                auto value = table[i][column_id];
+                if(value < prev_value){
+                    //std::cout << value << " < " << prev_value << std::endl;
+                    num_of_runs++;
+                }
+                prev_value = value;
+            }
+            std::cout << "Num_of_runs of ascending numbers for column "<< column_id << ": " << num_of_runs << std::endl;
         }
         void sort_table (){
             matrix::iterator it, table_begin = table.begin(), triple_end = table.end();
             std::sort(table_begin, triple_end);
         }
 
-        void process_columns () {
+        void process_columns (bool save_files = false) {
             /*********************** PART 2.2 : Process k-1 ..+ 1 column ***********************/
             for(int i = 0; i < num_of_columns; i++){
                 std::cout << "Order # " << (i+1) << std::endl << "========" << std::endl;
@@ -124,18 +135,18 @@ class process_run_length{
                 }
                 sort_table();
                 //pop_first_column(table);
-                //Print the number of runs of columns [0, |L| - 1].
-                for(int i=0; i < table[0].size() - 1; i++){
-                    print_num_of_runs(i);
+                //Print the number of runs of all columns.
+                for(int i=0; i < table[0].size(); i++){
+                    print_num_of_runs_eq_num(i);
+                    print_num_of_runs_ascending_num(i);
                 }
                 const std::vector<uint64_t>& L = get_last_column_as_vector();
-                //Print the number of runs of the last column.
-                int last_column_id = table[0].size() - 1;
-                print_num_of_runs(last_column_id);
-                std::ofstream sof(  std::to_string(i)+".dat" );
-                boost::archive::text_oarchive oarch(sof);
-                // Save the data
-                oarch &L;
+                if(save_files){
+                    std::ofstream sof(  std::to_string(i)+".dat" );
+                    boost::archive::text_oarchive oarch(sof);
+                    // Save the data
+                    oarch &L;
+                }
             }
         }
 };
